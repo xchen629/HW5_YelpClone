@@ -1,7 +1,6 @@
 package com.example.hw5_yelpclone
 
 import com.google.gson.annotations.SerializedName
-import java.net.Inet4Address
 
 data class YelpSearchResult(
     @SerializedName("total") val total: Int,

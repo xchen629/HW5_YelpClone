@@ -9,6 +9,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
+import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.item_restaurant.view.*
 
 class RestaurantsAdapter(val context: Context, val restaurant: List<YelpRestaurant>) : RecyclerView.Adapter<RestaurantsAdapter.ViewHolder>(){
@@ -33,7 +34,7 @@ class RestaurantsAdapter(val context: Context, val restaurant: List<YelpRestaura
             itemView.category.text = restaurants.categories[0].title
             itemView.distance.text = restaurants.displayDistance()
             itemView.price.text = restaurants.price
-            Glide.with(context).load(restaurants.imageUrl).apply(RequestOptions().transform(CenterCrop())).into(itemView.imageView2)
+            Picasso.get().load(restaurants.imageUrl).into(itemView.imageView2)
         }
 
     }

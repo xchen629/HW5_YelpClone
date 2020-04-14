@@ -33,7 +33,7 @@ class MainActivity : AppCompatActivity() {
             .build()
 
         val yelpService = retrofit.create(YelpService::class.java)
-        yelpService.searchRestaurants("Bearer $API_KEY","pizza New Britain", "New York").enqueue(object : Callback<YelpSearchResult> {
+        yelpService.searchRestaurants("Bearer $API_KEY","pizza", "New Britain").enqueue(object : Callback<YelpSearchResult> {
             override fun onResponse(call: Call<YelpSearchResult>, response: Response<YelpSearchResult>) {
                 Log.i(TAG, "onResponse $response")
                 val body = response.body()
