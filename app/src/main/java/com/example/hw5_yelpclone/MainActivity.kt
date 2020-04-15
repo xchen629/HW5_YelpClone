@@ -1,10 +1,14 @@
 package com.example.hw5_yelpclone
 
+import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.activity_main.*
 import retrofit2.Call
 import retrofit2.Callback
@@ -22,18 +26,25 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val restaurant = mutableListOf<YelpRestaurant>()
-        val adapter = RestaurantsAdapter(this, restaurant)
         restaurantRecyler.adapter = adapter
         restaurantRecyler.layoutManager = LinearLayoutManager(this)
+    }
 
-        val retrofit = Retrofit.Builder()
-            .baseUrl(BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
+    val restaurant = mutableListOf<YelpRestaurant>()
+    val adapter = RestaurantsAdapter(this, restaurant)
 
-        val yelpService = retrofit.create(YelpService::class.java)
-        yelpService.searchRestaurants("Bearer $API_KEY","pizza", "New Britain").enqueue(object : Callback<YelpSearchResult> {
+    val retrofit = Retrofit.Builder()
+        .baseUrl(BASE_URL)
+        .addConverterFactory(GsonConverterFactory.create())
+        .build()
+
+    val yelpService = retrofit.create(YelpService::class.java)
+
+    fun search(view: View){
+        val food = searchFood.text.toString()
+        val location = searchLocation.text.toString()
+
+        yelpService.searchRestaurants("Bearer $API_KEY",food, location).enqueue(object : Callback<YelpSearchResult> {
             override fun onResponse(call: Call<YelpSearchResult>, response: Response<YelpSearchResult>) {
                 Log.i(TAG, "onResponse $response")
                 val body = response.body()
@@ -49,6 +60,10 @@ class MainActivity : AppCompatActivity() {
                 Log.i(TAG, "onFailure $t")
             }
         })
-
+    }
+    fun View.hideKeyboard() {
+        val inputMethodManager = context.getSystemService(Context.INPUT_METHOD_SERVICE) as
+                InputMethodManager
+        inputMethodManager.hideSoftInputFromWindow(windowToken, 0)
     }
 }
