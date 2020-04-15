@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -28,6 +29,7 @@ class MainActivity : AppCompatActivity() {
 
         restaurantRecyler.adapter = adapter
         restaurantRecyler.layoutManager = LinearLayoutManager(this)
+
     }
 
     val restaurant = mutableListOf<YelpRestaurant>()
@@ -43,6 +45,8 @@ class MainActivity : AppCompatActivity() {
     fun search(view: View){
         val food = searchFood.text.toString()
         val location = searchLocation.text.toString()
+        val foodbar = findViewById<EditText>(R.id.searchFood)
+        val locationbar = findViewById<EditText>(R.id.searchLocation)
 
         yelpService.searchRestaurants("Bearer $API_KEY",food, location).enqueue(object : Callback<YelpSearchResult> {
             override fun onResponse(call: Call<YelpSearchResult>, response: Response<YelpSearchResult>) {
@@ -60,7 +64,10 @@ class MainActivity : AppCompatActivity() {
                 Log.i(TAG, "onFailure $t")
             }
         })
+        foodbar.hideKeyboard()
+        locationbar.hideKeyboard()
     }
+
     fun View.hideKeyboard() {
         val inputMethodManager = context.getSystemService(Context.INPUT_METHOD_SERVICE) as
                 InputMethodManager
