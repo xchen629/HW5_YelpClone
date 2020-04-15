@@ -1,12 +1,15 @@
 package com.example.hw5_yelpclone
 
 import android.content.Context
+import android.content.DialogInterface
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
 import android.widget.LinearLayout
+import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.activity_main.*
@@ -43,27 +46,55 @@ class MainActivity : AppCompatActivity() {
     fun search(view: View){
         val food = searchFood.text.toString()
         val location = searchLocation.text.toString()
+        val foodbar = findViewById<EditText>(R.id.searchFood)
+        val locationbar = findViewById<EditText>(R.id.searchLocation)
 
-        yelpService.searchRestaurants("Bearer $API_KEY",food, location).enqueue(object : Callback<YelpSearchResult> {
-            override fun onResponse(call: Call<YelpSearchResult>, response: Response<YelpSearchResult>) {
-                Log.i(TAG, "onResponse $response")
-                val body = response.body()
-                if (body == null){
-                    Log.w(TAG, "Did not receive anything from Yelp Api")
-                    return
+        if (food.isEmpty() || location.isEmpty()){
+            showDialog2(view)
+        }else{
+            yelpService.searchRestaurants("Bearer $API_KEY",food, location).enqueue(object : Callback<YelpSearchResult> {
+                override fun onResponse(call: Call<YelpSearchResult>, response: Response<YelpSearchResult>) {
+                    Log.i(TAG, "onResponse $response")
+                    val body = response.body()
+                    if (body == null){
+                        Log.w(TAG, "Did not receive anything from Yelp Api")
+                        return
+                    }
+                    restaurant.addAll(body.restaurants)
+                    adapter.notifyDataSetChanged()
                 }
-                restaurant.addAll(body.restaurants)
-                adapter.notifyDataSetChanged()
-            }
 
-            override fun onFailure(call: Call<YelpSearchResult>, t: Throwable) {
-                Log.i(TAG, "onFailure $t")
-            }
-        })
+                override fun onFailure(call: Call<YelpSearchResult>, t: Throwable) {
+                    Log.i(TAG, "onFailure $t")
+                }
+            })
+        }
+        foodbar.hideKeyboard()
+        locationbar.hideKeyboard()
     }
+
     fun View.hideKeyboard() {
         val inputMethodManager = context.getSystemService(Context.INPUT_METHOD_SERVICE) as
                 InputMethodManager
         inputMethodManager.hideSoftInputFromWindow(windowToken, 0)
+    }
+    fun showDialog2(view: View) {
+
+        // Create an alertdialog builder object,
+        // then set attributes that you want the dialog to have
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("Search term missing")
+        builder.setMessage("Search term cannot be empty, Please enter a search term!")
+        // Set an icon, optional
+        builder.setIcon(android.R.drawable.ic_delete)
+
+        // Set the button actions, all of them are optional
+        builder.setPositiveButton("OKAY"){ dialog, which ->
+            // code to run when YES is pressed
+        }
+
+        // create the dialog and show it
+        val dialog = builder.create()
+        dialog.show()
     }
 }
