@@ -8,13 +8,13 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/restaurantRecyler"
-        android:layout_width="410dp"
-        android:layout_height="727dp"
-        android:layout_marginTop="8dp"
+        android:layout_width="403dp"
+        android:layout_height="536dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/searchLocation" />
+        app:layout_constraintTop_toBottomOf="@+id/searchLocation"
+        tools:listitem="@layout/item_restaurant" />
 
     <EditText
         android:id="@+id/searchFood"

@@ -1,6 +1,7 @@
 package com.example.hw5_yelpclone
 
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,6 +15,7 @@ import kotlinx.android.synthetic.main.item_restaurant.view.*
 
 class RestaurantsAdapter(val context: Context, val restaurant: List<YelpRestaurant>) : RecyclerView.Adapter<RestaurantsAdapter.ViewHolder>(){
 
+    private val TAG = "adapter"
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(LayoutInflater.from(context).inflate(R.layout.item_restaurant, parent, false))
     }
@@ -34,7 +36,13 @@ class RestaurantsAdapter(val context: Context, val restaurant: List<YelpRestaura
             itemView.category.text = restaurants.categories[0].title
             itemView.distance.text = restaurants.displayDistance()
             itemView.price.text = restaurants.price
-            Picasso.get().load(restaurants.imageUrl).into(itemView.imageView2)
+
+            if (restaurants.imageUrl ==null || restaurants.imageUrl.isEmpty()){
+                Picasso.get().load("https://sciences.ucf.edu/psychology/wp-content/uploads/sites/63/2019/09/No-Image-Available.png").into(itemView.imageView2)
+            }
+            else {
+                Picasso.get().load(restaurants.imageUrl).into(itemView.imageView2)
+            }
         }
 
     }

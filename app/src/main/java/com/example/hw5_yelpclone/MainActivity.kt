@@ -52,6 +52,7 @@ class MainActivity : AppCompatActivity() {
         if (food.isEmpty() || location.isEmpty()){
             showDialog2(view)
         }else{
+            restaurant.clear();
             yelpService.searchRestaurants("Bearer $API_KEY",food, location).enqueue(object : Callback<YelpSearchResult> {
                 override fun onResponse(call: Call<YelpSearchResult>, response: Response<YelpSearchResult>) {
                     Log.i(TAG, "onResponse $response")
