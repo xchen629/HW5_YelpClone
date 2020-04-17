@@ -2,6 +2,8 @@ package com.example.hw5_yelpclone
 
 import android.content.Context
 import android.content.DialogInterface
+import android.content.Intent
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -9,6 +11,7 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.LinearLayout
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -48,12 +51,13 @@ class MainActivity : AppCompatActivity() {
         val location = searchLocation.text.toString()
         val foodbar = findViewById<EditText>(R.id.searchFood)
         val locationbar = findViewById<EditText>(R.id.searchLocation)
+        val displayLimit = 30 //how many items to display in recycler view (default is 20, max is 50) Displaying too much can cause irrelevant results to be shown for search
 
         if (food.isEmpty() || location.isEmpty()){
             showDialog2(view)
         }else{
             restaurant.clear();
-            yelpService.searchRestaurants("Bearer $API_KEY",food, location).enqueue(object : Callback<YelpSearchResult> {
+            yelpService.searchRestaurants("Bearer $API_KEY",food,displayLimit, location).enqueue(object : Callback<YelpSearchResult> {
                 override fun onResponse(call: Call<YelpSearchResult>, response: Response<YelpSearchResult>) {
                     Log.i(TAG, "onResponse $response")
                     val body = response.body()

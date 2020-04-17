@@ -1,22 +1,23 @@
 package com.example.hw5_yelpclone
 
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.bitmap.CenterCrop
-import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import com.bumptech.glide.request.RequestOptions
 import com.squareup.picasso.Picasso
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.item_restaurant.view.*
 
 class RestaurantsAdapter(val context: Context, val restaurant: List<YelpRestaurant>) : RecyclerView.Adapter<RestaurantsAdapter.ViewHolder>(){
 
     private val TAG = "adapter"
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+
         return ViewHolder(LayoutInflater.from(context).inflate(R.layout.item_restaurant, parent, false))
     }
 
@@ -28,6 +29,29 @@ class RestaurantsAdapter(val context: Context, val restaurant: List<YelpRestaura
     }
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
+        // Set onClickListener to show a toast message for the selected row item in the list
+        init{
+            itemView.setOnClickListener{
+                val selectedItem = adapterPosition
+                Toast.makeText(itemView.context, "You clicked on ${restaurant[adapterPosition].name}",
+                    Toast.LENGTH_SHORT).show()
+
+                val Yelplocation = restaurant[adapterPosition].location
+
+                var address = Yelplocation.address //street address
+                address = "$address ${Yelplocation.city} ${Yelplocation.state}" //street, city, and state
+                val businessName = restaurant[adapterPosition].name.take(15).replace("&","and") //business name from Yelp limited to 15 characters
+
+                val url = "http://maps.google.co.in/maps?q=$businessName$address"  //show location by using a combination of business name and address
+                //val url = "http://maps.google.com/maps?daddr=$businessName$address" //directions to address
+                //val location = Uri.parse("geo:41.692438,-72.7680165?z=14") //ccsu coordinates
+
+                val location = Uri.parse(url)
+                val mapIntent = Intent(Intent.ACTION_VIEW, location)
+                context.startActivity(mapIntent)
+            }
+        }
+
         fun bind(restaurants: YelpRestaurant) {
             itemView.restaurantName.text = restaurants.name
             itemView.ratingBar2.rating = restaurants.rating.toFloat()
@@ -44,6 +68,5 @@ class RestaurantsAdapter(val context: Context, val restaurant: List<YelpRestaura
                 Picasso.get().load(restaurants.imageUrl).into(itemView.imageView2)
             }
         }
-
     }
 }
