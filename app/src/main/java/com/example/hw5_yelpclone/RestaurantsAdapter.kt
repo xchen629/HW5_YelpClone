@@ -32,8 +32,7 @@ class RestaurantsAdapter(val context: Context, val restaurant: List<YelpRestaura
         // Set onClickListener to show a toast message for the selected row item in the list
         init{
             itemView.setOnClickListener{
-                val selectedItem = adapterPosition
-                Toast.makeText(itemView.context, "You clicked on ${restaurant[adapterPosition].name}",
+                Toast.makeText(itemView.context, "Opening in maps: ${restaurant[adapterPosition].name}",
                     Toast.LENGTH_SHORT).show()
 
                 val Yelplocation = restaurant[adapterPosition].location
@@ -49,6 +48,22 @@ class RestaurantsAdapter(val context: Context, val restaurant: List<YelpRestaura
                 val location = Uri.parse(url)
                 val mapIntent = Intent(Intent.ACTION_VIEW, location)
                 context.startActivity(mapIntent)
+            }
+
+            // Set onLongClickListener to show a toast message and remove the selected row item from the list
+            itemView.setOnLongClickListener {
+                Toast.makeText(
+                    itemView.context, "Calling: ${restaurant[adapterPosition].name}",
+                    Toast.LENGTH_SHORT
+                ).show()
+
+                val phoneNumber = restaurant[adapterPosition].phoneNum
+                // Dial a phone number
+                val callIntent = Intent(Intent.ACTION_DIAL)
+                callIntent.data = Uri.parse("tel:$phoneNumber")
+                context.startActivity(callIntent)
+
+                return@setOnLongClickListener true
             }
         }
 
